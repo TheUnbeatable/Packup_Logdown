@@ -1,20 +1,12 @@
 # Description
 给定长为n(n<=1e5)的序列A和一个p(p <= 1e9),一共q(q<=1e5)个询问,每次求
-```mathjax
-A_l^{\Big ( {A_{l+1}^{\big (  A_{l+2}^{ ( \dots A_r ) }  \big )}} \Big ) } mod \ p
-```
+$$ A_l^{\Big ( {A_{l+1}^{\big (  A_{l+2}^{ ( \dots A_r ) }  \big )}} \Big ) } mod \ p $$
 # Idea
 有一个叫欧拉定理的:
-```mathjax
-(a,b)=1 \ \Rightarrow \ a^{\phi(p)} \equiv 1 \pmod p
-```
-```mathjax
-所以(a,b)=1 \ \Rightarrow \ a^{b} \equiv a^{b \ mod \ \phi(p)} \pmod p
-```
+$$ (a,b)=1 \ \Rightarrow \ a^{\phi(p)} \equiv 1 \pmod p $$
+$$ 所以(a,b)=1 \ \Rightarrow \ a^{b} \equiv a^{b \ mod \ \phi(p)} \pmod p $$
 对于(a,b)!=1,有扩展定理:
-```mathjax
-b \ge \phi(p) \ \Rightarrow \ a^{b} \equiv a^{b \ mod \ \phi(p)+\phi(p)} \pmod p
-```
+$$ b \ge \phi(p) \ \Rightarrow \ a^{b} \equiv a^{b \ mod \ \phi(p)+\phi(p)} \pmod p $$
 注意到对一个数不停求phi,最多经过log步,我们可以预处理出对k不断求phi的值.
 对于每一个询问,从l开始不断递归求指数部分,复杂度O(Nlog^2N).
 注意递归下去时,如果指数小于phi,要按照原定理而不是扩展定理.
