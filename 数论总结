@@ -1,0 +1,27 @@
+## Lucas定理
+![Pic](https://gss2.bdstatic.com/9fo3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D181/sign=0f2ba76c75f08202299295377afafb8a/e824b899a9014c08cc666bea0c7b02087bf4f424.jpg)
+O(PlogN)
+```cpp Lucas Theroem
+inline LL Lucas (LL a, LL b, int p) {
+    return b == 0 ? 1 : C(a % p, b % p, p) * Lucas(a / p, b / p, p) % p;
+}
+```
+## 杜教筛
+![get.png](http://user-image.logdown.io/user/42873/blog/39448/post/4708788/4AjUpRNGQ1GJENfbCyhg_get.png)
+而n/i是只有根号n个的.
+只有记忆化并预处理根号n个前缀和才是O(n^(2/3))的.
+```cpp
+inline LL GetPhi(LL x) {
+  if (x < N) return Phi[x];
+  if (phi.count(x)) return phi[x];
+  LL res = 1LL * x * (x + 1) / 2;
+  for (LL i = 2, j; i <= x; i = j + 1) {
+    j = x / (x / i);
+    res -= (j - i + 1) * GetPhi(x / i);
+  }
+  phi[x] = res;
+  return res;
+}
+```
+## 阶、原根与指数
+见http://theunbeatable.logdown.com/posts/4722628/bzoj1319-discrete-roots
