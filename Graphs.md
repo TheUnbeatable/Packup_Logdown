@@ -36,7 +36,7 @@
   }
 ```
 ### 2.边信息
-有一种干干净净的方法,把一条边的信息转化成一个点的信息储存,由这个点向该边原来的两个端点连边.这样转化就完全没有分类讨论和复杂的维护了.
+把一条边的信息转化成一个点的信息储存,由这个点向该边原来的两个端点连边.这样转化就完全没有分类讨论和复杂的维护了(复杂度应该没问题).
 
 ---
 # Practices
@@ -67,11 +67,26 @@ dp[i][j][k]表示在第i层有j个点,前i层有k个点.O(n)转移,总复杂度`
 考虑每一条不在path上的边E(u,v,l),le[u]到ri[v]的边删除都可以用dis[u] + Dis[v] + l来替代.
 可以发现,如果不在le[u]到ri[v]的范围内,E(u,v,l)所能带来的最短替代路径一定不是最优的.
 所以线段树区间更新一下,总复杂度`$\mathcal{O(NlogN)}$`.
+### [Code](https://github.com/TheUnbeatable/Packup_Logdown/blob/master/Codes/BZOJ2725%5BViolet%206%5D%E6%95%85%E4%B9%A1%E7%9A%84%E6%A2%A6.cpp)
 
 ## 计蒜之道2016复赛 百度地图的实时路况
 ### Description
-给定一张图和它的邻结矩阵,定义`$d(x,y,z)$`表示从x到y不经过z的最短路,求`$P = \sum_{1 \leq x,y,z \leq n , x \neq y , y \neq z}{d(x,y,z)}$`.(n <= 300,2s).
+给定一张图和它的邻接矩阵,定义`$d(x,y,z)$`表示从x到y不经过z的最短路,求`$P = \sum_{1 \leq x,y,z \leq n , x \neq y , y \neq z}{d(x,y,z)}$`.(n <= 300,2s).
 ### Idea
 既然任意两点件都要计算最短路,那么Floyd就好了.但是考虑到不能支持快速删除操作和点集的合并,只能动态加入,所以对于每一个z到要把整个图重新计算一次,就是O(n^4).
 考虑分治,处理`$z \in [L,R]$`的答案,先保存原图,用[mid+1,R]更新最短路,处理右边,然后恢复成原图,用[L,mid]更新最短路,递归处理右边.
 这样每一层中总共加入n个点,复杂度`$\mathcal{O(N^3logN)}$`
+### [Code](https://github.com/TheUnbeatable/Packup_Logdown/blob/master/Codes/%E8%AE%A1%E8%92%9C%E4%B9%8B%E9%81%932016%E5%A4%8D%E8%B5%9B%20%E7%99%BE%E5%BA%A6%E5%9C%B0%E5%9B%BE%E7%9A%84%E5%AE%9E%E6%97%B6%E8%B7%AF%E5%86%B5.cpp)
+
+## BZOJ 1576 [Usaco2009 Jan]安全路经Travel
+### Description
+给定一张N点M边的无向图(N <= 1e5, M <= 2e5)，保证从1号点到每个点的最短路唯一。设1号点到i号点的最短路最后一条边为Ei，对每一个i求出1号点不经过Ei到达i的最短路。
+### Idea
+Sol 1
+由于题目保证最短路唯一，所以最短路DAG即为最短路树.考虑每一条非树边(u,v,l)，且u与v在树上不是父子关系，设u和v在最短路树上的lca为x。
+那么从1号点先走到u再到v再到[x,v]间的一个点y不会经过Ey，用dis[u] + l + dis[v] - dis[y]更新ans[y].用左偏树维护一下，支持一下整棵树加的tag，在LCA的地方减两次。
+**记得pop的时候要把根的标记先下放!!!**
+Sol 2
+考虑到一定是长度小的非树边贡献更大，所以可以把非树边排序后并查集卷一下。
+复杂度`$\mathcal{O(NlogN)}$`，后者常数更小.
+### [Code](https://github.com/TheUnbeatable/Packup_Logdown/blob/master/Codes/LuoguP2934%20%5BUSACO09JAN%5D%E5%AE%89%E5%85%A8%E5%87%BA%E8%A1%8CSafeTravel.cpp)
