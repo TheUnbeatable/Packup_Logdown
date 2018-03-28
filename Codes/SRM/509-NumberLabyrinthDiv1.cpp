@@ -1,7 +1,6 @@
 #include <cstdio>
 #include <iostream>
 #include <map>
-#include <ctime>
 #include <vector>
 #include <cstring>
 #include <algorithm>
@@ -42,7 +41,7 @@ private :
   struct Obj {
     int x, y, v, id;
     Obj() {}
-    Obj(int _x, int _y, int _v = 0) : x(_x), y(_y), v(_v) {};
+    Obj(int _x, int _y, int _v = 0) : x(_x), y(_y), v(_v), id(0) {};
     inline bool operator < (const Obj &o) const { return x != o.x ? x < o.x : y < o.y; }
     inline bool operator <= (const Obj &o) const { return x <= o.x && y <= o.y; }
     inline bool operator == (const Obj &o) const { return x == o.x && y == o.y; }
@@ -101,8 +100,11 @@ public :
     arr[++ tot] = Obj(0, 0);
     arr[tot].id = tot;
     for (ri i = 1; i <= tot; i ++)
-      for (ri j = 1; j <= tot; j ++)
-        for (ri k = 0; k <= K; k ++) rec[i][j][k] = count(arr[i], arr[j], k);
+      if (arr[i] <= a[n])
+        for (ri j = 1; j <= tot; j ++)
+          if (arr[j] <= a[n])
+            for (ri k = 0; k <= K; k ++)
+              rec[i][j][k] = count(arr[i], arr[j], k);
     for (ri i = 1; i <= n; i ++)
       for (ri k = 0; k <= K; k ++) {
         dp[i][k] = calc(arr[tot], a[i], k);
