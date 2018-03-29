@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <iostream>
 #include <map>
+#include <ctime>
 #include <vector>
 #include <cstring>
 #include <algorithm>
@@ -49,7 +50,7 @@ private :
     inline Obj D() { return Obj(x + v, y); }
   } a[N], b[N], R[N], D[N], arr[N * 3];
   int n;
-  LL dp[N][12], rec[N * 3][N * 3][12];
+  LL dp[N][12], rec[N][N][12], g[N][12], f[N][12];
 public :
   inline LL count(Obj s, Obj t, int step) {
     if (!(s <= t)) return 0;
@@ -67,20 +68,21 @@ public :
       (ans += C(x - 1, i) * C(y - 1, step - i) % mod * C(step + 2, i + 1)) %= mod;
     return ans;
   }
-  inline LL calc(Obj s, Obj t, int step) {
-    if (!(s <= t)) return 0;
+  inline vector <LL> calc(Obj s, Obj t, int K) {
     static LL dp[N][12];
     int m = 0;
     for (ri i = 1; i <= n; i ++)
       if (s <= a[i] && a[i] <= t) b[++ m] = a[i];
     for (ri i = 1; i <= m; i ++)
-      for (ri k = 0; k <= step; k ++) {
-        dp[i][k] = rec[s.id][b[i].id][k];
+      for (ri k = 0; k <= K; k ++) {
+        dp[i][k] = count(s, b[i], k);
         for (ri j = 1; j < i; j ++)
           for (ri l = 0; l <= k; l ++)
             if (dp[j][l]) ( dp[i][k] -= rec[b[j].id][b[i].id][k - l] * dp[j][l] ) %= mod;
       }
-    return (dp[m][step] + mod) % mod;
+    vector <LL> res; res.resize(K + 1);
+    for (int i = 0; i <= K; i ++) res[i] = dp[m][i];
+    return res;
   }
   inline int getNumberOfPaths(VI X, VI Y, VI val, int Ex, int Ey, int K) {
     if (K < 2) return 0;
@@ -90,27 +92,23 @@ public :
         a[++ n] = (Obj) { X[i], Y[i], val[i] };
     a[++ n] = (Obj) { Ex, Ey };
     sort(a + 1, a + n + 1);
-    int tot = 0;
-    for (ri i = 1; i <= n; i ++) {
-      R[i] = a[i].R(); D[i] = a[i].D();
-      a[i].id = ++ tot; arr[tot] = a[i];
-      R[i].id = ++ tot; arr[tot] = R[i];
-      D[i].id = ++ tot; arr[tot] = D[i];
-    }
-    arr[++ tot] = Obj(0, 0);
-    arr[tot].id = tot;
-    for (ri i = 1; i <= tot; i ++)
-      if (arr[i] <= a[n])
-        for (ri j = 1; j <= tot; j ++)
-          if (arr[j] <= a[n])
-            for (ri k = 0; k <= K; k ++)
-              rec[i][j][k] = count(arr[i], arr[j], k);
+    for (ri i = 1; i <= n; i ++) a[i].id = i;
     for (ri i = 1; i <= n; i ++)
-      for (ri k = 0; k <= K; k ++) {
-        dp[i][k] = calc(arr[tot], a[i], k);
-        for (ri j = 1; j < i; j ++)
+      for (ri j = 1; j <= n; j ++)
+        for (ri k = 0; k <= K; k ++)
+          rec[i][j][k] = count(a[i], a[j], k);
+    vector <LL> A, B;
+    for (ri i = 1; i <= n; i ++) {
+      A = calc(Obj(0, 0), a[i], K);
+      for (ri k = 0; k <= K; k ++) dp[i][k] = A[k];
+    }
+    for (ri i = 1; i <= n; i ++)
+      for (ri j = 1; j < i; j ++) {
+        A = calc(a[j].R(), a[i], K);
+        B = calc(a[j].D(), a[i], K);
+        for (ri k = 0; k <= K; k ++)
           for (ri l = 0; l <= k; l ++)
-            if (dp[j][l]) ( dp[i][k] += dp[j][l] * (calc(R[j], a[i], k - l) + calc(D[j], a[i], k - l)) ) %= mod;
+            if (dp[j][l]) ( dp[i][k] += dp[j][l] * (A[k - l] + B[k - l]) ) %= mod;
       }
     LL ans = 0;
     for (int i = 0; i <= K; i ++) ans += dp[n][i];
