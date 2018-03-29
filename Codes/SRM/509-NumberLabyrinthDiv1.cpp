@@ -50,7 +50,7 @@ private :
     inline Obj D() { return Obj(x + v, y); }
   } a[N], b[N], R[N], D[N], arr[N * 3];
   int n;
-  LL dp[N][12], rec[N][N][12], g[N][12], f[N][12];
+  LL dp[N][12], rec[N][N][12];
 public :
   inline LL count(Obj s, Obj t, int step) {
     if (!(s <= t)) return 0;
