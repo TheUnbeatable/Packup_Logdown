@@ -4,7 +4,7 @@
  
  ## Idea
  首先容易发现到达一个点的时间不同,接下来做的决策也不一定相同,而图中可能存在环,无法直接递推DP.
- 考虑
+ 考虑$dp_{u,k}$表示在点$u$,当前时间是$k$,走到终点的期望代价,
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMzcxMDA0ODRdfQ==
+eyJoaXN0b3J5IjpbLTYwNzA5MzIzNl19
 -->
