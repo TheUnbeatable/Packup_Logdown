@@ -269,28 +269,18 @@ namespace Poly {
     }
     int mid = (L + R) >> 1;
     solve(L, mid, a, b);
-    int n = Up(mid - L + 1) + 1;
+    int n = Up(R - L + 1);
     int len = 1 << n;
-    Swap1.clear();
-    Swap2.clear();
-    Swap3.clear();
-    Swap1.resize(len);
-    Swap2.resize(len);
-    Swap3.resize(len);
-    for (int i = L; i <= mid; i ++) {
-      Swap1[i - L] = b[i]; Swap2[i - L] = a[i - L];
-    }
-    for (int i = mid + 1; i <= R; i ++) Swap3[i - mid - 1] = a[i - L];
-    Dft(Swap1, n); Dft(Swap2, n); Dft(Swap3, n);
-    for (int i = 0; i < len; i ++) {
+    Swap1.clear(); Swap1.resize(len);
+    Swap2.clear(); Swap2.resize(len);
+    for (int i = L; i <= mid; i ++)
+      Swap1[i - L] = b[i], Swap2[i - L] = a[i - L];
+    for (int i = mid + 1; i <= R; i ++) Swap2[i - L] = a[i - L];
+    Dft(Swap1, n); Dft(Swap2, n);
+    for (int i = 0; i < len; i ++)
       Swap2[i] = Swap2[i] * Swap1[i] % mod;
-      Swap3[i] = Swap3[i] * Swap1[i] % mod;
-    }
-    IDft(Swap2, n); IDft(Swap3, n);
-    for (int i = mid + 1; i <= R; i ++) {
-      if (i - L - 1 < Swap2.size()) b[i] += Swap2[i - L - 1];
-      if (0 <= i - mid - 2 && i - mid - 2 < Swap3.size()) b[i] += Swap3[i - mid - 2];
-    }
+    IDft(Swap2, n);
+    for (int i = mid + 1; i <= R; i ++) b[i] += Swap2[i - L - 1];
     solve(mid + 1, R, a, b);
   }
   inline void Exponent(const poly &a, poly &b) {
@@ -301,6 +291,7 @@ namespace Poly {
     swap(b, d);
   }
 #undef Int
+#undef ri
 }
 using namespace Poly;
 
